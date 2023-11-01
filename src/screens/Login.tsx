@@ -1,52 +1,61 @@
 import * as React from 'react';
-import { View, Text, StyleSheet, TextInput, Button, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet } from 'react-native';
+import * as SecureStore from 'expo-secure-store';
 
 interface LoginProps {
-  navigation: any; // 
+  navigation: any; // Replace 'any' with the correct navigation type if available
 }
 
-declare var global: { nameLogin: string };
-
 const Login: React.FC<LoginProps> = ({ navigation }) => {
-  const [email, setEmail] = React.useState('');
-  const [password, setPassword] = React.useState('');
+  const [state, setState] = React.useState({
+    userEmail: '',
+    userPassword: '',
+  });
 
-  const registeredState = {
-    email: 'exemplo@email.com', // 
-    password: 'suasenha', // 
-    name: 'Seu Nome', // 
-  };
+  async function handleLogin() {
+    // Validation logic
+    if (!state.userEmail || !state.userPassword) {
+      Alert.alert('Login Error', 'Please fill in all fields');
+      return;
+    }
 
-  function handleLogin() {
-    if (email === registeredState.email && password === registeredState.password) {
-      setPassword('');
-      global.nameLogin = registeredState.name; // Global variable
-      navigation.replace('BottomStack');
+    // Check if the user exists in SecureStore
+    const userData = await SecureStore.getItemAsync('userTestData');
+
+    if (userData) {
+      const testUser = JSON.parse(userData);
+
+      if (state.userEmail === testUser.userEmail && state.userPassword === testUser.userPassword) {
+        // Login successful
+        Alert.alert('Login Successful', 'You are now logged in as the test user');
+        // You can navigate to the main app screen or perform other actions here
+      } else {
+        Alert.alert('Login Error', 'Invalid email or password');
+      }
     } else {
-      Alert.alert(
-        'Erro ao tentar efetuar o login:',
-        'Informe o e-mail e a senha corretos'
-      );
+      Alert.alert('Login Error', 'User not found. Please register first.');
     }
   }
 
   return (
     <View style={styles.container}>
-      <Text>Tela de Login</Text>
+      <Text style={styles.titleText}>Login</Text>
       <TextInput
         style={styles.input}
-        placeholder="E-mail"
-        value={email}
-        onChangeText={(text) => setEmail(text)}
+        value={state.userEmail}
+        onChangeText={(value) => setState({ ...state, userEmail: value })}
+        placeholder={'Email'}
       />
       <TextInput
         style={styles.input}
-        placeholder="Senha"
+        value={state.userPassword}
+        onChangeText={(value) => setState({ ...state, userPassword: value })}
+        placeholder={'Password'}
         secureTextEntry={true}
-        value={password}
-        onChangeText={(text) => setPassword(text)}
       />
-      <Button title="Entrar" onPress={handleLogin} />
+      <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+        <Text style={styles.loginButtonText}>Login</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -58,13 +67,34 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#FFC300',
   },
-  input: {
-    width: 200,
+  titleText: {
+    fontWeight: 'bold',
+    fontSize: 30,
+    color: '#730000',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  loginButton: {
+    width: '50%',
     height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    margin: 10,
+    backgroundColor: '#E37D00',
     padding: 5,
+    borderRadius: 5,
+  },
+  loginButtonText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#730000',
+    textAlign: 'center',
+  },
+  input: {
+    width: '90%',
+    height: 45,
+    padding: 10,
+    borderWidth: 1,
+    borderColor: '#730000',
+    borderRadius: 5,
+    marginBottom: 10,
   },
 });
 

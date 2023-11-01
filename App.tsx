@@ -6,7 +6,7 @@ import { NavigationContainer, RouteProp, getFocusedRouteNameFromRoute, ParamList
 import { createStackNavigator } from '@react-navigation/stack';
 import Login from './src/screens/Login';
 import Register from './src/screens/Register';
-import BottomStack from './BottomStack';
+import BottomStack from './src/screens/BottomStack';
 
 
 type RootStackParamList = {

@@ -3,9 +3,9 @@ import { View, Text, StyleSheet } from 'react-native';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { MaterialCommunityIcons } from '@expo/vector-icons'; //Novo Produto
 import { MaterialIcons } from '@expo/vector-icons'; //Listar Produtos
-import Home from './src/screens/Home';
-import Product from './src/screens/Product';
-import ProductList from './src/screens/ProductList';
+import Home from './Home';
+import Product from './Product';
+import ProductList from './ProductList';
 
 const Tab = createMaterialBottomTabNavigator();
 

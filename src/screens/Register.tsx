@@ -9,14 +9,31 @@ interface RegisterProps {
 
 const Register: React.FC<RegisterProps> = ({ navigation }) => {
   const [state, setState] = React.useState({
-    userName: '',
-    userPhone: '',
-    userEmail: '',
-    userPassword: '',
+    userName: 'Test User',          // Set the test user's name
+    userPhone: '123-456-7890',      // Set the test user's phone
+    userEmail: 'testuser@example.com', // Set the test user's email
+    userPassword: 'password123',    // Set the test user's password
   });
 
   async function handleRegister() {
-    // Your registration logic here
+    // Simulate user registration and save test user data to SecureStore
+    const testUserData = {
+      userName: state.userName,
+      userPhone: state.userPhone,
+      userEmail: state.userEmail,
+      userPassword: state.userPassword,
+    };
+
+    try {
+      // Save test user data to SecureStore
+      await SecureStore.setItemAsync('userTestData', JSON.stringify(testUserData));
+
+      // Show a success message and navigate to the login screen
+      Alert.alert('Registration Successful', 'You are now registered!');
+      navigation.navigate('Login');
+    } catch (error) {
+      Alert.alert('Registration Error', 'An error occurred during registration.');
+    }
   }
 
   return (
@@ -53,7 +70,7 @@ const Register: React.FC<RegisterProps> = ({ navigation }) => {
       </TouchableOpacity>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
